@@ -1,0 +1,16 @@
+.button5 {
+    background-color: #3a3a3a;
+    position: absolute;
+    left: 314px;
+    top: 0%;
+    margin: 0%;
+    height: 7%;
+    width: 79.37%;
+    border: 2px solid black;
+}
+
+@media (max-width: 800px) {
+    .button5 {
+        width: 450px;
+    } 
+}

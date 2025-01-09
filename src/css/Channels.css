@@ -1,0 +1,156 @@
+.pannel {
+    background-color: #1e1e1e;
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    margin: 0%;
+    height: 99.5%;
+    width: 80px;
+    border: 2px solid black;
+}
+
+.myChannel {
+    background-color: rgb(55, 54, 54);
+    position: absolute;
+    border-radius: 50%;
+    width: 70%;
+    height: 8%;
+    left: 12%;
+    top: 10px;
+    margin: 0%;
+    cursor: pointer;
+}
+
+.myChannel:hover {
+    border-radius: 10%;
+    transition: 0.5s;
+}
+
+.addChannelButton {
+    background-color: rgb(55, 54, 54);
+    position: absolute;
+    border-radius: 50%;
+    width: 70%;
+    height: 8%;
+    left: 12%;
+    top: 82px;
+    margin: 0%;
+}
+
+.addChannelButton:hover {
+    border-radius: 10%;
+    transition: 0.5s;
+}
+
+.addChannelButton h1 {
+    color: rgb(26, 147, 26);
+    position: absolute;
+    width: 70%;
+    height: 8%;
+    left: 15%;
+    bottom: 54px;
+    margin: 0%;
+}
+
+p {
+    background-color:  rgb(55, 54, 54);
+    position: absolute;
+    border-radius: 25px;
+    width: 40%;
+    height: 0.3%;
+    left: 26%;
+    top: 72px;
+    margin: 0%;
+}
+
+.hover-text {
+    display: none; 
+    position: absolute;
+    top: -20%; 
+    left: 220%;
+    height: 25px;
+    width: auto;
+    transform: translateX(-50%);
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap; 
+    z-index: 2; 
+}
+
+.addChannelButton:hover .hover-text {
+    display: block; 
+}
+
+.model-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7); /* Translucent black background */
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.model-content {
+    background-color: rgb(55, 54, 54);
+    width: 28%;
+    height: 70%;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    overflow-y: visible;
+}
+
+.model-content h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.model-content input {
+    width: 45vw;
+    height: 10vh;
+    font-size: 22px;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2f2f2f;
+    color: white;
+}
+
+
+.close-modal-btn {
+    background-color: rgb(55, 54, 54);
+    position: absolute;
+    left: 60.8%;
+    top: 15%;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.close-modal-btn:hover {
+    background-color: rgb(30, 29, 29);
+}
+
+@media (max-width: 800px) {
+
+    .model-content {
+        width: 55%;
+      }
+    
+      .model-content input {
+        width: 90%;
+      }
+
+    .close-modal-btn {
+        left: 71.1%;
+    }
+}
