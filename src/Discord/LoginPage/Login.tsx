@@ -41,7 +41,7 @@ function Login() {
 
         const success = await loginIn(userName, password);
         if (success) {
-            navigate("/UserPage");
+            navigate(`/UserPage/${userName.toString()}`);
         } else {
             alert("Login failed. Please check your username and password.");
         }

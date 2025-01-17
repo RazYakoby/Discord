@@ -6,7 +6,7 @@ import axios from 'axios';
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
 
-const GetChannels = async (): Promise<Channels[]> => {
+/*const GetChannels = async (): Promise<Channels[]> => {
     try {
         const response = await axios.post(`${baseRoute}${loginRoute}/GetChannels`);
         if (response.status === 200) {
@@ -20,7 +20,7 @@ const GetChannels = async (): Promise<Channels[]> => {
         console.error('Error fetching user stories:', error);
         return [];
     }
-}
+} */
 
 interface Channels {
     userName: string[];
@@ -37,8 +37,8 @@ function Channles () {
 
     useEffect(() => {
         const fetch = async () => {
-            const fetchChannels = await GetChannels();
-            setChannels(fetchChannels);
+            //const fetchChannels = await GetChannels();
+            //setChannels(fetchChannels);
         }
         fetch();
     }, []);

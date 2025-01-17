@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../../css/Chat&staff.css';
+import { useParams } from "react-router-dom";
 import axios from 'axios';
 
 const baseRoute = 'http://localhost:3200';
@@ -12,9 +13,9 @@ interface friend {
   onClick: () => void;
 }
 
-const GetFriends = async (): Promise<friend[]> => {
+const GetFriends = async (userName: string): Promise<friend[]> => {
   try {
-      const response = await axios.post(`${baseRoute}${loginRoute}/GetFriends`);
+      const response = await axios.post(`${baseRoute}${loginRoute}/GetFriends`, { userName });
       if (response.status === 200) {
           console.log('Response data:', JSON.stringify(response.data, null, 2));
           return Array.isArray(response.data) ? response.data : [];
@@ -31,14 +32,16 @@ const GetFriends = async (): Promise<friend[]> => {
 function App() {
 
   const [friends, setFriends] = useState<friend[]>([]);
+  const { userName } = useParams<{ userName: string }>();
 
-  useEffect (() => {
-    const fetch = async () => {
-      const result = await GetFriends();
-      setFriends(result);
-    }
-    fetch();
-  }, []);
+  if (userName)
+    useEffect (() => {
+      const fetch = async () => {
+        const result = await GetFriends(userName);
+        setFriends(result);
+      }
+      fetch();
+    }, [userName]);
   
     return (
       <div className='button1'>

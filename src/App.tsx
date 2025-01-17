@@ -9,9 +9,10 @@ function App() {
     <Router>
       <Routes>
         <Route path='/*' element={<Login />} />
+        <Route path='/Login' element={<Login />} />
         <Route path='/Register' element={<Register />} />
         <Route path='/ForgotPassword' element={<ForgotPassword />} />
-        <Route path='/UserPage' element={<UserPage />} />
+        <Route path='/UserPage/:userName' element={<UserPage />} />
       </Routes>
     </Router>
   );

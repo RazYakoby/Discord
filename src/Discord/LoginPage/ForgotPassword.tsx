@@ -27,13 +27,11 @@ const UserFound = async (userName: string, password: string): Promise<boolean> =
 
 const PasswordUpdated = async (userName: string, password: string, newPassword: string): Promise<boolean> => {
     try {
-        alert("fg");
         const response = await axios.post(`${baseRoute}${loginRoute}/PasswordUpdating`, {
             userName,
             password,
             newPassword,
         });
-        alert("sg");
         if (response.status === 200) {
             return true;
         } else {
@@ -62,12 +60,12 @@ function ForgotPassword() {
         if (await UserFound(userName, password)) {
             await PasswordUpdated(userName, password, newPassword);
             alert("Seccessfully");
-            navigate("Login");
+            navigate("/Login");
         }
     }
 
     const BackToLogin = () => {
-        navigate("Login");
+        navigate("/Login");
     }
     return (
         <>
