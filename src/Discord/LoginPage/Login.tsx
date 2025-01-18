@@ -1,9 +1,11 @@
 import '../../css/LoginPage.css';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import axios from 'axios';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
+const mainRoute = '/main';
 
 const loginIn = async (userName: string, password: string): Promise<boolean> => {
     try { 
@@ -26,6 +28,56 @@ const loginIn = async (userName: string, password: string): Promise<boolean> => 
     }
 };
 
+interface User {
+    id: string;
+    email: string;
+    displayName: string;
+    userName: string;
+    password: string;
+    friends: string[];
+    isOnline: boolean;
+    img: string;
+}
+
+const GetUser = async (userName: string): Promise<User> => {
+    let u: User = { 
+        id: "",
+        email: "", 
+        displayName: "",
+        userName: "", 
+        password: "", 
+        friends: [],
+        isOnline: false,
+        img: ""
+    };
+
+    try {
+        const response = await axios.post(`${baseRoute}${mainRoute}/GetUser`, { userName });
+        if (response.status === 200) {
+            console.log('Response data:', JSON.stringify(response.data, null, 2));
+            if (Array.isArray(response.data)) {
+                const userItems: User[] = response.data.map((item: any) => ({
+                    id: item.id,
+                    email: item.email,
+                    displayName: item.displayName,
+                    userName: item.userName,
+                    password: item.password,
+                    friends: item.friends,
+                    isOnline: item.isOnline,
+                    img: item.img
+                }));
+                return userItems[0];
+            }
+        }
+
+        console.error('Failed to fetch user:', response.statusText);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+    }
+
+    return u;
+};
+
 function Login() {
     const navigate = useNavigate();
 
@@ -41,8 +93,10 @@ function Login() {
 
         const success = await loginIn(userName, password);
         if (success) {
-            navigate(`/UserPage/${userName.toString()}`);
-        } else {
+            const user = await GetUser(userName.toString());
+            if (user) {
+                navigate(`/UserPage`, { state: user });
+            }} else {
             alert("Login failed. Please check your username and password.");
         }
     };

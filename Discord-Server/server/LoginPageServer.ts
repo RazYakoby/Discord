@@ -52,15 +52,4 @@ router.post("/PasswordUpdating", async (req: Request, res: Response) => {
     }
 });
 
-router.post("/GetFriends", async (req: Request, res: Response) => {
-    try {
-        const { userName } = req.body;
-        const friends = await GetFriends(userName); 
-        return res.status(200).json(friends); 
-    } catch (error) {
-        console.error("Error retrieving friends:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
-
 export const LoginPageServer = router;

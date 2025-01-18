@@ -1,47 +1,25 @@
-import { useEffect, useState } from 'react';
 import '../../css/Chat&staff.css';
-import { useParams } from "react-router-dom";
-import axios from 'axios';
+import { useLocation } from "react-router-dom";
+//import axios from 'axios';
 
-const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
+//const baseRoute = 'http://localhost:3200';
+//const loginRoute = '/main';
 
-interface friend {
-  image: string;
-  userName: string[];
-  online: boolean;
-  onClick: () => void;
-}
-
-const GetFriends = async (userName: string): Promise<friend[]> => {
-  try {
-      const response = await axios.post(`${baseRoute}${loginRoute}/GetFriends`, { userName });
-      if (response.status === 200) {
-          console.log('Response data:', JSON.stringify(response.data, null, 2));
-          return Array.isArray(response.data) ? response.data : [];
-      } else {
-          console.error('Failed to fetch stories:', response.statusText);
-          return [];
-      }
-  } catch (error) {
-      console.error('Error fetching user stories:', error);
-      return [];
-  }
+interface User {
+  id: string;
+  email: string;
+  displayName: string;
+  userName: string;
+  password: string;
+  friends: string[];
+  isOnline: boolean;
+  img: string;
 }
 
 function App() {
 
-  const [friends, setFriends] = useState<friend[]>([]);
-  const { userName } = useParams<{ userName: string }>();
-
-  if (userName)
-    useEffect (() => {
-      const fetch = async () => {
-        const result = await GetFriends(userName);
-        setFriends(result);
-      }
-      fetch();
-    }, [userName]);
+  const location = useLocation();
+  const user = location.state as User;
   
     return (
       <div className='button1'>
@@ -52,7 +30,7 @@ function App() {
               style={{ width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
               alt="Avatar"
             />
-            <text style={{margin: "1px 3px 1px 3px"}}>Friends</text>
+            <span style={{margin: "1px 3px 1px 3px"}}>Friends</span>
           </button>
           <button className='flexabillty'>
             <img
@@ -60,7 +38,7 @@ function App() {
               style={{ width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
               alt="Avatar"
             />
-            <text style={{margin: "1px 3px 1px 3px"}}>Nitro</text>
+            <span style={{margin: "1px 3px 1px 3px"}}>Nitro</span>
           </button>
           <button className='flexabillty'>
             <img
@@ -68,28 +46,20 @@ function App() {
               style={{ width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
               alt="Avatar"
             />
-            <text style={{margin: "1px 3px 1px 3px"}}>Shop</text>
+            <span style={{margin: "1px 3px 1px 3px"}}>Shop</span>
           </button>
         </div>
         <div className='space2'>
-          {friends.length > 0 ?
-            (friends.map((friend: any, index) => {
-              
-              return (
-                <button className='flexabillty'>
-                  <img
-                    key={index}
-                    src={friend.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSuMFvTh3hIO21nydJ3Lxv38Mg_odpdDAYvnegLGP1DYXQTzCzCMCYtXz_t8ulkQP_7dQ&usqp=CAU'}
-                    style={{ width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
-                    alt="Avatar"
-                  />
-                  <text style={{margin: "1px 3px 1px 3px"}}>{friend}</text>
-                </button>
-              );
-            })): (
-              <p>lo...</p>
-            ) 
-          }
+          {user.friends.map((friend, index) => (
+            <button key={friend + index} className='flexabillty'>
+              <img
+                src= {user.img ||  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSuMFvTh3hIO21nydJ3Lxv38Mg_odpdDAYvnegLGP1DYXQTzCzCMCYtXz_t8ulkQP_7dQ&usqp=CAU'}
+                style={{width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
+                alt="Avatar"
+              />
+              <span style={{margin: "3px 3px 3px 3px"}}>{friend} </span>
+          </button>
+        ))} 
         </div>
       </div>
     );

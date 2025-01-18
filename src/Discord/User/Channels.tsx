@@ -35,41 +35,39 @@ function Channles () {
         setIsCreateServerOpen(!isCreateServerOpen);
     }
 
-    useEffect(() => {
-        const fetch = async () => {
+    //useEffect(() => {
+        //const fetch = async () => {
             //const fetchChannels = await GetChannels();
             //setChannels(fetchChannels);
-        }
-        fetch();
-    }, []);
+        //}
+        //fetch();
+   // }, []);
 
     return (
-        <>
-            <div className='pannel'>
-                <img
-                    className='myChannel'
-                    src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSuMFvTh3hIO21nydJ3Lxv38Mg_odpdDAYvnegLGP1DYXQTzCzCMCYtXz_t8ulkQP_7dQ&usqp=CAU'}
-                    alt="Avatar"
-                />
-                <p/>
-                <div>
+        <div className='pannel'>
+            <img
+                className='myChannel'
+                src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSuMFvTh3hIO21nydJ3Lxv38Mg_odpdDAYvnegLGP1DYXQTzCzCMCYtXz_t8ulkQP_7dQ&usqp=CAU'}
+                alt="Avatar"
+            />
+            <p/>
+            <div>
                 <button className='addChannelButton' onClick={isOpen}><h1>+</h1></button>
                 {!isCreateServerOpen && (
                     <button className='addChannelButton' onClick={isOpen}><h1>+</h1> <div className="hover-text">Add a Server</div></button>
                 )}
-                    {isCreateServerOpen && (
-                        <div className='model-overlay' onClick={isOpen}>
-                            <div className='model-content' onClick={(e) => e.stopPropagation()}>
-                                <button className="close-modal-btn" onClick={isOpen}>
-                                    X
-                                </button>
-                               <CreateServer/>
-                            </div>
+                {isCreateServerOpen && (
+                    <div className='model-overlay' onClick={isOpen}>
+                        <div className='model-content' onClick={(e) => e.stopPropagation()}>
+                            <button className="close-modal-btn" onClick={isOpen}>
+                                X
+                            </button>
+                            <CreateServer/>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     )
 }
 

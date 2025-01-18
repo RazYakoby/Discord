@@ -34,17 +34,25 @@ export async function EmailExist(email: string) {
 }
 
 export async function GetFriends(userName: string) {
-        await client.connect();
-        const userCollection = await client.db("Discord").collection("Users");
-        let friends: string[] = [];
-        const user = await userCollection.findOne(
-            { userName: userName }, 
-            { projection: { friends: 1 } } // Include only the friends field
-        );
-        if (user && Array.isArray(user.friends)) {
-            friends = user.friends; // Assign the friends array
-        }
-        await client.close();
+    await client.connect();
+    const userCollection = await client.db("Discord").collection("Users");
+    let friends: string[] = [];
+    const user = await userCollection.findOne(
+        { userName: userName }, 
+        { projection: { friends: 1 } } // Include only the friends field
+    );
+    if (user && Array.isArray(user.friends)) {
+        friends = user.friends; // Assign the friends array
+    }
+    await client.close();
       
-        return friends;
+    return friends;
+}
+
+export async function GetUser(userName: string) {
+    await client.connect();
+    const userCollection = await client.db("Discord").collection("Users");
+    const user = await userCollection.find({"userName": userName}).toArray();
+    await client.close();
+    return user;
 }
