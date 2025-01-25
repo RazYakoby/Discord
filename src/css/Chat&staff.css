@@ -37,6 +37,7 @@
 
 .flexabillty:hover {
     background-color: #555;
+    border: transparent;
 }
 
 .avatar {

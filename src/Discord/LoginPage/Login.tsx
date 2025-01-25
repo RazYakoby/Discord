@@ -1,14 +1,16 @@
 import '../../css/LoginPage.css';
 import { useNavigate } from 'react-router-dom';
-import { Link } from "react-router-dom";
 import axios from 'axios';
+import { Button, Container, TextInput, PasswordInput, Flex } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import '@mantine/core/styles.css';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
 const mainRoute = '/main';
 
 const loginIn = async (userName: string, password: string): Promise<boolean> => {
-    try { 
+    try {
         const response = await axios.post(`${baseRoute}${loginRoute}/Login`, { userName, password });
         if (response.status === 200) {
             alert(response.data.message || "Login successful!");
@@ -18,7 +20,7 @@ const loginIn = async (userName: string, password: string): Promise<boolean> => 
             return false;
         }
     } catch (error) {
-        console.error("Error in loginIn:", error); 
+        console.error("Error in loginIn:", error);
         if (axios.isAxiosError(error) && error.response) {
             alert(`Error: ${error.response.data.message || "Unknown error occurred"}`);
         } else {
@@ -40,12 +42,12 @@ interface User {
 }
 
 const GetUser = async (userName: string): Promise<User> => {
-    let u: User = { 
+    let u: User = {
         id: "",
-        email: "", 
+        email: "",
         displayName: "",
-        userName: "", 
-        password: "", 
+        userName: "",
+        password: "",
         friends: [],
         isOnline: false,
         img: ""
@@ -79,12 +81,22 @@ const GetUser = async (userName: string): Promise<User> => {
 };
 
 function Login() {
+    const form = useForm({
+        initialValues: {
+            userName: '',
+            password: '',
+            termsOfService: false,
+        },
+        validate: {
+            userName: (value) => (value.trim() ? null : 'Username is required'),
+            password: (value) => (value.trim() ? null : 'Password is required'),
+        },
+    });
+
     const navigate = useNavigate();
 
-    const handleLogin = async (event: React.FormEvent) => {
-        event.preventDefault(); // Prevent page refresh
-        const userName = (document.getElementById("userName") as HTMLInputElement).value.trim();
-        const password = (document.getElementById("password") as HTMLInputElement).value;
+    const handleLogin = async (values: { userName: string, password: string }) => {
+        const { userName, password } = values;
 
         if (!userName || !password) {
             alert("Please fill in all fields.");
@@ -93,10 +105,11 @@ function Login() {
 
         const success = await loginIn(userName, password);
         if (success) {
-            const user = await GetUser(userName.toString());
+            const user = await GetUser(userName);
             if (user) {
                 navigate(`/UserPage`, { state: user });
-            }} else {
+            }
+        } else {
             alert("Login failed. Please check your username and password.");
         }
     };
@@ -107,30 +120,64 @@ function Login() {
 
     const ForgotPassword = () => {
         navigate("/ForgotPassword");
-    }
+    };
 
     return (
-        <>
-            <form className="border" onSubmit={handleLogin}>
+        <Container size="sm">
+            <form className="border" onSubmit={form.onSubmit(handleLogin)}>
                 <h2>Welcome Back!</h2>
                 <h4>We're so excited to see you again!</h4>
 
-                <div className="div">
-                    <label>Username</label>
-                    <input type="text" id="userName" placeholder="Enter your username" />
-                </div>
-                <div className="div">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" />
-                    <label className="text-button" onClick={ForgotPassword}>Forgot your password?</label>
-                </div>
-                <div className="div">
-                    <button type="button" className="button" onClick={handleLogin}>Login</button>
-                    <label>Need an account?</label>
-                    <label className="text-button" onClick={redirectToRegister}> Register</label>
-                </div>
+                <Flex direction="column" gap="md">
+                    <TextInput
+                        withAsterisk
+                        label="Username"
+                        placeholder="Enter your username"
+                        {...form.getInputProps('userName')}
+                        styles={{
+                            input: {
+                                backgroundColor: '#202225',
+                                color: "white"
+                            },
+                            label: {
+                                fontFamily: "sans-serif"
+                            }
+                        }}
+                    />
+
+                    <Flex direction="column" gap="xs">
+                        <PasswordInput
+                            withAsterisk
+                            label="Password"
+                            placeholder="Enter your password"
+                            {...form.getInputProps('password')}
+                            styles={{
+                                input: {
+                                    backgroundColor: '#202225',
+                                    color: "white"
+                                },
+                                label: {
+                                    fontFamily: "sans-serif"
+                                }
+                            }}
+                        />
+                        <Button variant="subtle" color="blue" style={{display: "flex", textAlign: "left", justifyContent: "left"}} onClick={ForgotPassword}>
+                            Forgot your password?
+                        </Button>
+                    </Flex>
+
+                    <Button type="submit" size="md" fullWidth>
+                        Login
+                    </Button>
+
+                    <Flex justify="space-between" align="center">
+                        <Button variant="subtle" color="blue" onClick={redirectToRegister}>
+                            Register
+                        </Button>
+                    </Flex>
+                </Flex>
             </form>
-        </>
+        </Container>
     );
 }
 

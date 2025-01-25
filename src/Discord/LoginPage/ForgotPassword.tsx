@@ -1,6 +1,8 @@
 import "../../css/LoginPage.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from '@mantine/form';
+import { Button, TextInput, PasswordInput, Flex, Title } from '@mantine/core';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
@@ -52,11 +54,28 @@ const PasswordUpdated = async (userName: string, password: string, newPassword: 
 function ForgotPassword() {
     const navigate = useNavigate();
 
-    const PasswordUpdating = async (event: React.FormEvent) => {
-        event.preventDefault();
-        const userName = (document.getElementById("userName") as HTMLInputElement).value;
-        const password = (document.getElementById("password") as HTMLInputElement).value;
-        const newPassword = (document.getElementById("newPassword") as HTMLInputElement).value;
+    const form = useForm({
+        initialValues: {
+            userName: '',
+            password: '',
+            newPassword: '',
+            termsOfService: false,
+        },
+        validate: {
+            userName: (value) => (value.trim() ? null : 'Username is required'),
+            password: (value) => (value.trim() ? null : 'Password is required'),
+            newPassword: (value) => (value.trim() ? null : 'newPassword is required'),
+        },
+    });
+
+    const passwordUpdating = async (values: { userName: string, password: string, newPassword: string }) => {
+        const { userName, password, newPassword } = values;
+
+        if (!userName || !password || !newPassword) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
         if (await UserFound(userName, password)) {
             await PasswordUpdated(userName, password, newPassword);
             alert("Seccessfully");
@@ -69,24 +88,63 @@ function ForgotPassword() {
     }
     return (
         <>
-            <form className="border" onSubmit={PasswordUpdating}>
-                <h2>Reset Your Password</h2>
-                <div>
-                    <label>UserName</label>
-                    <input id="userName"></input>
-                </div>
-                <div>
-                    <label>PASSWORD</label>
-                    <input id="password"></input>
-                </div>
-                <div>
-                    <label>New PASSWORD</label>
-                    <input id="newPassword"></input>
-                </div>
-                <div>
-                    <button className="button" onClick={PasswordUpdating}>Update</button>
-                </div>
-                <h3 className="text-button" onClick={BackToLogin}>Back</h3>
+            <form className="border" onSubmit={form.onSubmit(passwordUpdating)}>
+                <Title size={"xl"} className="title">Reset Your Password</Title>
+                <Flex direction={"column"} gap={"xs"}>
+                    <TextInput 
+                        withAsterisk
+                        label="UserName"
+                        placeholder="Enter your userName"
+                        {...form.getInputProps("userName")}
+                        styles={{
+                            input: {
+                                backgroundColor: '#202225',
+                                color: "white"
+                            },
+                            label: {
+                                fontFamily: "sans-serif"
+                            }
+                        }}
+                    />
+                </Flex>
+                <Flex direction={"column"} gap={"xs"}>
+                    <PasswordInput 
+                        withAsterisk
+                        label="Password"
+                        placeholder="Enter your password"
+                        {...form.getInputProps("password")}
+                        styles={{
+                            input: {
+                                backgroundColor: '#202225',
+                                color: "white"
+                            },
+                            label: {
+                                fontFamily: "sans-serif"
+                            }
+                        }}
+                    />
+                </Flex>
+                <Flex direction={"column"} gap={"xs"}>
+                    <PasswordInput 
+                        withAsterisk
+                        label="New Password"
+                        placeholder="Enter your new password"
+                        {...form.getInputProps("newPassword")}
+                        styles={{
+                            input: {
+                                backgroundColor: '#202225',
+                                color: "white"
+                            },
+                            label: {
+                                fontFamily: "sans-serif"
+                            }
+                        }}
+                    />
+                </Flex>
+                <Flex>
+                    <Button className="button" type="submit" size="md" fullWidth onClick={() => passwordUpdating}>Update</Button>
+                </Flex>
+                <Button variant="subtle" color="blue" style={{marginTop: "10px"}} onClick={BackToLogin}>Back</Button>
                 
             </form>
         </>

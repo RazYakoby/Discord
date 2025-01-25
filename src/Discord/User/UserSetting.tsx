@@ -1,5 +1,6 @@
 import '../../css/UserSetting.css';
 import { useLocation } from "react-router-dom";
+import { faMicrophone, faMicrophoneLines } from '@fortawesome/free-solid-svg-icons';
 
 interface User {
     id: string;
@@ -19,7 +20,7 @@ function UserSetting () {
 
     return (
         <div className='button4'>
-            <button className='flexabillty'>
+            <button className='flexabillty2'>
                 {user ? (
                     <>
                         <img
@@ -28,12 +29,19 @@ function UserSetting () {
                             style={{ width: "32px", height: "32px", borderRadius: "50%", margin: "-3px 10px 0px -10px"}}
                             alt="Avatar"
                         />
-                        <span style={{margin: "1px 3px 1px 3px"}}>{user.userName}</span>
+                        <span style={{fontSize: "12px"}}>{user.userName}</span>
+                        <span style={{margin: "15px 0px 0px -56px", fontSize: "10px"}}>{user.displayName}</span>
                     </>
                 ): (
                     <p>Loading user details...</p>
                 )}
             </button>
+            <div className='settingButton'>
+                <button className='settingIcon'>
+                </button>
+                <button className='settingIcon'></button>
+                <button className='settingIcon'></button>
+            </div>
         </div>
     )
 }
