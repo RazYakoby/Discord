@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import '../../css/Channels.css';
 import CreateServer from './CreateServer';
+import { Button, Flex, Avatar, Card } from '@mantine/core';
+
 import axios from 'axios';
 
 const baseRoute = 'http://localhost:3200';
@@ -44,30 +46,33 @@ function Channles () {
    // }, []);
 
     return (
-        <div className='pannel'>
-            <img
+        <Flex className='pannel'>
+            <Avatar
                 className='myChannel'
-                src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSuMFvTh3hIO21nydJ3Lxv38Mg_odpdDAYvnegLGP1DYXQTzCzCMCYtXz_t8ulkQP_7dQ&usqp=CAU'}
-                alt="Avatar"
+                src={null} 
+                alt="no image here"
+                color='white'
             />
             <p/>
-            <div>
-                <button className='addChannelButton' onClick={isOpen}><h1>+</h1></button>
+            <Flex>
+                <Button className='addChannelButton' onClick={isOpen}><h1>+</h1></Button>
                 {!isCreateServerOpen && (
                     <button className='addChannelButton' onClick={isOpen}><h1>+</h1> <div className="hover-text">Add a Server</div></button>
                 )}
                 {isCreateServerOpen && (
-                    <div className='model-overlay' onClick={isOpen}>
-                        <div className='model-content' onClick={(e) => e.stopPropagation()}>
-                            <button className="close-modal-btn" onClick={isOpen}>
-                                X
-                            </button>
+                    <Card className='model-overlay' onClick={isOpen}>
+                        <Flex direction="column" gap="xs" className='model-content' onClick={(e) => e.stopPropagation()}>
+                            <Flex style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <Button type="submit" color="white" style={{ backgroundColor: "rgb(55, 54, 54)" }} onClick={isOpen}>
+                                    X
+                                </Button>
+                            </Flex>
                             <CreateServer/>
-                        </div>
-                    </div>
+                        </Flex>
+                    </Card>
                 )}
-            </div>
-        </div>
+            </Flex>
+        </Flex>
     )
 }
 

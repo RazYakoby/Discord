@@ -4,7 +4,7 @@
     left: 80px; 
     top: 93%; 
     margin: 0;
-    height: 6.5%;
+    height: 7%;
     width: 235px; 
     border: 2px solid black;
 }
@@ -12,13 +12,13 @@
 .flexabillty2 {
     position: relative;
     display: flex;
-    margin: 0px 0px 0px 0px;
-    width: 123px;
-    height: 45px;
-    border-radius: 0px;
+    align-items: center;
+    padding: 4px 8px; 
+    border-radius: 0;
     background-color: transparent;
-    color: white;
+    border: none;
 }
+
 
 .flexabillty2:hover {
     background-color: rgb(75, 72, 72);
@@ -30,5 +30,5 @@
     display: flex;
     width: 160px;
     height: 45px;
-    margin: -43px 0px 0px 100px;
+    margin: 0px 0px 0px 0px;
 }

@@ -4,13 +4,13 @@
     left: 314px;
     top: 7%;
     margin: 0%;
-    height: 92.5%;
+    height: 93%;
     width: 79.37%;
     border: 2px solid black;
 }
 
 @media (max-width: 800px) {
     .button6 {
-        width: 450px;
+        width: 453px;
     } 
 }
