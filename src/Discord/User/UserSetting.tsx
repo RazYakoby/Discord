@@ -5,8 +5,8 @@ import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { TbHeadphonesFilled, TbHeadphonesOff  } from "react-icons/tb";
 import { IoSettingsSharp } from "react-icons/io5";
 import { FaDiscord } from "react-icons/fa";
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface User {
     id: string;
@@ -19,10 +19,68 @@ interface User {
     img: string;
 }
 
+const baseRoute = 'http://localhost:3200';
+const loginRoute = '/login';
+const mainRoute = '/main';
+
+const useUserStatus = (userName: string) => {
+  useEffect(() => {
+    const setOnlineStatus = async () => {
+      try {
+        await axios.post(`${baseRoute}${mainRoute}/set-online`, { userName });
+        console.log("User is online now.");
+      } catch (error) {
+        console.error("Error setting online status:", error);
+      }
+    };
+
+    const setOfflineStatus = () => {
+      const url = `${baseRoute}${mainRoute}/set-offline`;
+      const data = JSON.stringify({ userName });
+
+      try {
+        if (navigator.sendBeacon) {
+          const blob = new Blob([data], { type: 'application/json' });
+          const sent = navigator.sendBeacon(url, blob);
+          console.log("sendBeacon result:", sent);
+        } else {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: data,
+            keepalive: true,
+          }).catch(err => console.error("Fetch fallback error:", err));
+        }
+      } catch (err) {
+        console.error("Error sending offline status:", err);
+      }
+    };
+
+    // Set user to online when component mounts
+    setOnlineStatus();
+
+    const handleBeforeUnload = () => {
+      console.log("Window is closing, setting user offline...");
+      setOfflineStatus();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleBeforeUnload); // `unload` for older browsers
+
+    return () => {
+      console.log("Removing event listeners...");
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleBeforeUnload);
+    };
+  }, [userName]);
+};
+
+
 function UserSetting () {
 
     const location = useLocation();
     const user = location.state as User;
+    useUserStatus(user.userName);
 
     const [mic, setMic] = useState(true);
     const [headphone, setHeadphone] = useState(true);

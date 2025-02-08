@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button, Container, TextInput, PasswordInput, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import '@mantine/core/styles.css';
+import { useEffect } from 'react';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
@@ -39,6 +40,7 @@ interface User {
     friends: string[];
     isOnline: boolean;
     img: string;
+    lastActive: Date;
 }
 
 const GetUser = async (userName: string): Promise<User> => {
@@ -50,7 +52,8 @@ const GetUser = async (userName: string): Promise<User> => {
         password: "",
         friends: [],
         isOnline: false,
-        img: ""
+        img: "",
+        lastActive: new Date(),
     };
 
     try {
@@ -66,7 +69,8 @@ const GetUser = async (userName: string): Promise<User> => {
                     password: item.password,
                     friends: item.friends,
                     isOnline: item.isOnline,
-                    img: item.img
+                    img: item.img,
+                    lastActive: new Date(item.lastActive),
                 }));
                 return userItems[0];
             }
@@ -81,6 +85,7 @@ const GetUser = async (userName: string): Promise<User> => {
 };
 
 function Login() {
+    const l = document.getElementsByName("login1");
     const form = useForm({
         initialValues: {
             userName: '',
@@ -102,18 +107,20 @@ function Login() {
             alert("Please fill in all fields.");
             return;
         }
-
         const success = await loginIn(userName, password);
         if (success) {
             const user = await GetUser(userName);
             if (user) {
+                alert(userName)
                 navigate(`/UserPage`, { state: user });
             }
         } else {
             alert("Login failed. Please check your username and password.");
         }
     };
-
+    
+    
+    
     const redirectToRegister = () => {
         navigate("/Register");
     };

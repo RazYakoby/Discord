@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import { GetFriends, GetUser } from './MongoDB';
+import { GetFriends, GetUser, SetOffline, SetOnline } from './MongoDB';
 import { error } from 'console';
 
 const router = express.Router();
@@ -28,5 +28,30 @@ router.post("/GetUser", async (req: Request, res: Response) => {
         res.status(500).send("Internal Server Error");
     }
 })
+
+router.post("/set-online", async (req: Request, res: Response) => {
+    try {
+        const {userName} = req.body;
+        const user = await SetOnline(userName);
+        return res.status(200).json(user);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
+router.post("/set-offline", async (req: Request, res: Response) => {
+    try {
+        const {userName, isOnline} = req.body;
+        const user = await SetOffline(userName);
+        return res.status(200).json(user);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+
 
 export const mainPageServer = router;

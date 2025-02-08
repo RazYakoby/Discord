@@ -9,6 +9,19 @@
     border: 2px solid black;
 }
 
+.titleButtons { 
+    margin: 5px 0px 0px 10px;
+    width: 95%;
+}
+
+.item {
+    background-color: rgb(55, 54, 54);
+    border: gray solid 2px;
+    width: 95%;
+    margin-top: 2%;
+    left: 2%;
+}
+
 @media (max-width: 800px) {
     .button5 {
         width: 453px;
