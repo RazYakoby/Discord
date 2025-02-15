@@ -14,8 +14,8 @@ function UserPage () {
             <Search/>
             <ChatNStaff/>
             <UserSetting/>
-            <Titles/>
-            <Display/>
+            <Titles />
+            
         </>
     )
 }

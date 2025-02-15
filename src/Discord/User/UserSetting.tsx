@@ -1,6 +1,6 @@
 import '../../css/UserSetting.css';
 import { useLocation } from "react-router-dom";
-import {Avatar, Button, Flex } from '@mantine/core';
+import {Avatar, Button, Checkbox, TextInput, Combobox, Flex, useCombobox } from '@mantine/core';
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { TbHeadphonesFilled, TbHeadphonesOff  } from "react-icons/tb";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -23,64 +23,46 @@ const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
 const mainRoute = '/main';
 
-const useUserStatus = (userName: string) => {
-  useEffect(() => {
-    const setOnlineStatus = async () => {
-      try {
-        await axios.post(`${baseRoute}${mainRoute}/set-online`, { userName });
-        console.log("User is online now.");
-      } catch (error) {
-        console.error("Error setting online status:", error);
-      }
-    };
+const useUserStatus = (userName: string, status: string) => {
+    useEffect(() => {
+        const setOnlineStatus = async () => {
+            try {
+                await axios.post(`${baseRoute}${mainRoute}/set-online`, { userName, status });
+                console.log("User is online now.");
+            } catch (error) {
+                console.error("Error setting online status:", error);
+            }
+        };
 
-    const setOfflineStatus = () => {
-      const url = `${baseRoute}${mainRoute}/set-offline`;
-      const data = JSON.stringify({ userName });
-
-      try {
-        if (navigator.sendBeacon) {
-          const blob = new Blob([data], { type: 'application/json' });
-          const sent = navigator.sendBeacon(url, blob);
-          console.log("sendBeacon result:", sent);
-        } else {
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: data,
-            keepalive: true,
-          }).catch(err => console.error("Fetch fallback error:", err));
-        }
-      } catch (err) {
-        console.error("Error sending offline status:", err);
-      }
-    };
-
-    // Set user to online when component mounts
-    setOnlineStatus();
-
-    const handleBeforeUnload = () => {
-      console.log("Window is closing, setting user offline...");
-      setOfflineStatus();
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('unload', handleBeforeUnload); // `unload` for older browsers
-
-    return () => {
-      console.log("Removing event listeners...");
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('unload', handleBeforeUnload);
-    };
-  }, [userName]);
+        setOnlineStatus();
+    }, [userName, status]);
 };
 
+const status: { [key: string]: string } = {
+    online: "green",
+    Idle: "orange",
+    "Do Not Disturb": "red",
+    Invisible: "gray",
+  };
 
 function UserSetting () {
 
+    const [value, setValue] = useState("online");
     const location = useLocation();
     const user = location.state as User;
-    useUserStatus(user.userName);
+
+    useUserStatus(user.userName, value);
+    const combobox = useCombobox ({
+        onDropdownClose: () => combobox.resetSelectedOption(),
+    });
+
+    const options = Object.keys(status).map((key) => (
+        <Combobox.Option value={key} key={key} style={{ color: status[key] }}>
+          {key}
+        </Combobox.Option>
+      ));
+
+    const [currentDisplay, setCurrentDisplay] = useState<string>(user.displayName); // State to control what to display
 
     const [mic, setMic] = useState(true);
     const [headphone, setHeadphone] = useState(true);
@@ -92,6 +74,18 @@ function UserSetting () {
     const headphoneOnOff = () => {
         setHeadphone(!headphone);
     }
+
+    useEffect(() => {
+        combobox.selectFirstOption();
+    }, [value])
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+          setCurrentDisplay((prev) => (prev === user.displayName ? value : user.displayName));
+        }, 10000);
+    
+        return () => clearInterval(intervalId);
+      }, [value, user.displayName]); 
 
     return (
         <Flex className='button4'>
@@ -113,6 +107,7 @@ function UserSetting () {
                                     }}
                                     alt="Avatar"
                                 />
+                                
                             ) : (
                                 <FaDiscord size={32}     
                                     style={{
@@ -124,8 +119,44 @@ function UserSetting () {
                                         border: "2px solid #2f3136",
                                    }} />
                             )}
-                            <span style={{fontSize: "12px", marginBottom: "15px"}}>{user.userName}</span>
-                            <span style={{margin: "15px 5px 0px -56px", fontSize: "10px"}}>{user.displayName}</span>
+                            <Combobox 
+                                width={250}
+                                position="bottom-start"
+                                withArrow
+                                onOptionSubmit={(value) => {
+                                    setValue(value);
+                                    combobox.closeDropdown();
+                                }}
+                                store={combobox}
+                            >
+                                <Combobox.Target>
+                                    <Button 
+                                        style={{
+                                            margin: "0px 10px -20px -20px",
+                                            color: "#ffffff",
+                                            backgroundColor: status[value],
+                                            borderRadius: "50%",
+                                            padding: "5px",
+                                            border: "2px solid #2f3136",
+                                            height: "10px",
+                                            outline: "none",
+                                            boxShadow: "none"
+                                       }} 
+                                        onClick={() => combobox.toggleDropdown()}
+                                    />
+                                </Combobox.Target>
+                                <Combobox.Dropdown>
+                                    <Combobox.Options>
+                                        {options}
+                                    </Combobox.Options>
+                                </Combobox.Dropdown>
+                            </Combobox>
+                            <Flex style={{width: "60px"}}>
+                                <span style={{fontSize: "12px", marginBottom: "15px"}}>{user.userName}</span>
+                            </Flex>
+                            <Flex style={{position:"relative", right: 60, width: "50px"}}>
+                                <span style={{margin: "15px 5px 0px 0px", fontSize: "10px"}}>{currentDisplay}</span>
+                            </Flex>
                         </>
                     ): (
                         <p>Loading user details...</p>
