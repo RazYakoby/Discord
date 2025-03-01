@@ -2,13 +2,21 @@ import {Collection, MongoClient} from 'mongodb';
 import mongoose from 'mongoose';
 const clusterUrl = "localhost:27017"; 
 const dbUrl = "mongodb://localhost:27017/";//`mongodb+srv://${userName}:${password}@${clusterUrl}/test?retryWrites=true&w=majority`;
-const client = new MongoClient(dbUrl);
+const client = new MongoClient(dbUrl, {});
 
 export async function SetUser(email: string, displayName: string, userName: string, password: string, friends: string[]) {
-    await client.connect();
-    const userCollection = await client.db("Discord").collection("Users");
-    const users = await userCollection.insertOne({"Email": email, "displayName": displayName, "userName": userName, "password": password, "friends": friends, "status": "", img: "", lastActivity: new Date()});
-    await client.close(); 
+    const db = await connectDB();
+    const userCollection = db.collection("Users");
+    await userCollection.insertOne({
+        Email: email, 
+        displayName, 
+        userName, 
+        password, 
+        friends, 
+        status: "", 
+        img: "", 
+        lastActivity: new Date()
+    });
 }
 
 export async function UserExist(userName: string) {
@@ -74,6 +82,38 @@ export async function SetOffline(userName: string) {
 }
 
 export async function GetOnline(userName: string) {
+    await ensureConnection();
+    const db = await connectDB();
+    try {
+
+        const userCollection = await db.collection("Users").aggregate([
+            { $match: { userName: userName } }, // Find the user
+            {
+                $lookup: {
+                    from: "Users", // The same collection for friends
+                    localField: "friends", // The field that stores friend usernames
+                    foreignField: "userName", // Match friend usernames
+                    pipeline: [
+                        { $match: { status: { $in: ["online"] } } }, // Get only online or idle friends
+                    ],
+                    as: "onlineFriends"
+                }
+            },
+            {
+                $project: { _id: 0, onlineFriends: 1 } // Keep only online friends
+            }
+        ]).toArray();
+
+        return userCollection.length > 0 ? userCollection[0].onlineFriends : [];
+    } catch (error) {
+        console.error("Error fetching online friends:", error);
+        return []; // Return an empty array on error
+    } finally {
+        await client.close();
+    }
+}
+
+export async function GetAllFriends(userName: string) {
     try {
         await client.connect();
         const userCollection = client.db("Discord").collection("Users");
@@ -106,45 +146,58 @@ export async function GetOnline(userName: string) {
     }
 }
 
-// Establish MongoDB connection at the start
-export const connectDB = async () => {
+export async function AddFriends(userName: string) {
+    
+}
+
+let isConnected = false; // Track connection state
+
+export async function connectDB() {
+    if (!isConnected) {
+        try {
+            await client.connect();
+            isConnected = true;
+            console.log("✅ MongoDB Connected");
+        } catch (error) {
+            console.error("❌ MongoDB Connection Error:", error);
+            throw error;
+        }
+    }
+    return client.db("Discord"); // Return the database instance
+}
+
+export async function ensureConnection() {
     try {
-        await mongoose.connect(dbUrl);
-        console.log("✅ MongoDB Connected");
+        await client.db().admin().ping(); // Ping MongoDB to check connection
     } catch (error) {
-        console.error("❌ MongoDB Connection Error:", error);
-        process.exit(1); // Exit the process if connection fails
+        console.log("🔄 Reconnecting MongoDB...");
+        isConnected = false;
+        await connectDB(); // Reconnect
     }
-};
-/*
-// Ensure MongoDB connection before any operation
-export const ensureConnection = async () => {
-    if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
-        console.log("MongoDB not connected, reconnecting...");
-        await connectDB();
-    }
-};
+}
+
+
 
 setInterval(async () => {
     const TIMEOUT = 1 * 60 * 1000; // 1 minute
     const lastActiveThreshold = new Date(Date.now() - TIMEOUT);
 
-    // Ensure MongoDB connection before running operations
-    await ensureConnection();
+    await ensureConnection(); // Ensure MongoDB is connected
+    const db = await connectDB();
 
     try {
-        await client.connect();
-
-        const result = await client.db("Discord").collection("Users").updateMany(
+        const result = await db.collection("Users").updateMany(
             { "lastActivity": { $lt: lastActiveThreshold }, isOnline: true },
             { $set: { isOnline: false } }
         );
-        console.log(`✅ ${result.modifiedCount} users updated.`);
-        await client.close();
+        console.log(`✅ ${result.modifiedCount} users set to offline.`);
     } catch (error) {
         console.error("❌ Error updating users:", error);
     }
-}, 1 * 60 * 1000); // Runs every minute */
+}, 1 * 60 * 1000);
+
+
+
 
 
 

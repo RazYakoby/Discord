@@ -1,6 +1,6 @@
 import '../../css/UserSetting.css';
 import { useLocation } from "react-router-dom";
-import {Avatar, Button, Checkbox, TextInput, Combobox, Flex, useCombobox } from '@mantine/core';
+import {Avatar, Button, Checkbox, TextInput, Combobox, Flex, useCombobox, UnstyledButton } from '@mantine/core';
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { TbHeadphonesFilled, TbHeadphonesOff  } from "react-icons/tb";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -130,7 +130,7 @@ function UserSetting () {
                                 store={combobox}
                             >
                                 <Combobox.Target>
-                                    <Button 
+                                    <UnstyledButton 
                                         style={{
                                             margin: "0px 10px -20px -20px",
                                             color: "#ffffff",
@@ -171,7 +171,7 @@ function UserSetting () {
                     {!mic && (
                         <FaMicrophoneSlash size={"23px"}/>
                     )}
-                    </Button>
+                </Button>
                 <Button style={{backgroundColor: "transparent", padding:"0px 5px 0px 5px", height: "41px"}} onClick={headphoneOnOff}>
                     {headphone && (
                         <TbHeadphonesFilled size={"28px"}/>
