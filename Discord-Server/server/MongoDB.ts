@@ -4,19 +4,21 @@ const clusterUrl = "localhost:27017";
 const dbUrl = "mongodb://localhost:27017/";//`mongodb+srv://${userName}:${password}@${clusterUrl}/test?retryWrites=true&w=majority`;
 const client = new MongoClient(dbUrl, {});
 
-export async function SetUser(email: string, displayName: string, userName: string, password: string, friends: string[]) {
-    const db = await connectDB();
-    const userCollection = db.collection("Users");
+export async function SetUser(email: string, displayName: string, userName: string, password: string, friends: string[], requests: string[]) {
+    await client.connect();
+    const userCollection = await client.db("Discord").collection("Users");
     await userCollection.insertOne({
         Email: email, 
         displayName, 
         userName, 
         password, 
         friends, 
+        requests,
         status: "", 
         img: "", 
         lastActivity: new Date()
     });
+    await client.close();
 }
 
 export async function UserExist(userName: string) {
@@ -146,9 +148,76 @@ export async function GetAllFriends(userName: string) {
     }
 }
 
-export async function AddFriends(userName: string) {
-    
+export async function GetAllRequests(userName: string) {
+    try {
+        await client.connect();
+        const userCollection = client.db("Discord").collection("Users");
+
+        // Step 1: Find the user and get their requests array
+        const user = await userCollection.findOne(
+            { userName: userName },
+            { projection: { _id: 0, requests: 1 } }
+        );
+
+        if (!user || !user.requests || user.requests.length === 0) {
+            return []; // Return empty array if no requests found
+        }
+
+        // Step 2: Retrieve full details of all users in the requests array
+        const requestedUsers = await userCollection
+            .find({ userName: { $in: user.requests } }) // Match users from the requests array
+            .toArray();
+
+        return requestedUsers; // Return full user details
+    } catch (error) {
+        console.error("Error fetching requested users:", error);
+        return [];
+    } finally {
+        await client.close();
+    }
 }
+
+export async function AddFriends(userName: string, friendName: string) {
+    await client.connect();
+    const userCollection = client.db("Discord").collection("Users");
+
+    const update = await userCollection.updateOne(
+        { "userName": userName },
+        { "$addToSet": { "requests": friendName } } // Only adds if it's not already there
+    );    
+
+    await client.close();
+    return update;
+}
+
+export async function InsertFriends(userName: string, friendName: string) {
+    await client.connect();
+    const userCollection = client.db("Discord").collection("Users");
+
+    const update = await userCollection.updateOne(
+        { "userName": userName },
+        { "$addToSet": { "friends": friendName } } // Only adds if it's not already there
+    );    
+
+    await client.close();
+    return update;
+}
+
+import { WithId, Document } from "mongodb";
+
+export async function RejectFriends(userName: string, friendName: string) {
+    await client.connect();
+    const userCollection = client.db("Discord").collection<WithId<Document>>("Users");
+
+    const update = await userCollection.updateOne(
+        { "userName": userName },
+        { "$pull": { "requests": friendName } as any }
+    );
+
+    await client.close();
+    return update;
+}
+
 
 let isConnected = false; // Track connection state
 

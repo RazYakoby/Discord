@@ -5,11 +5,50 @@ import { FaDiscord, FaUserFriends } from "react-icons/fa";
 import { IoLogoIonitron } from "react-icons/io5";
 import { GiShop } from "react-icons/gi";
 import {create} from "zustand";
+import { useEffect, useState } from 'react';
 
-//import axios from 'axios';
+import axios from 'axios';
 
-//const baseRoute = 'http://localhost:3200';
-//const loginRoute = '/main';
+const baseRoute = 'http://localhost:3200';
+const mainRoute = '/main';
+
+const useAllUserStatus = (userName: string) => {
+  const [users, setUsers] = useState<User[]>([]); // Ensure users is an array
+  useEffect(() => {
+      const fetchOnlineFriends = async () => {
+          try {
+              const response = await axios.post(`${baseRoute}${mainRoute}/getAllFriends`, { userName });
+              console.log(response.data);
+
+              if (Array.isArray(response.data)) {
+                  // Mapping the response to User objects
+                  const userItems: User[] = response.data.map((item: any) => ({
+                      id: item.id || "",  // Ensure fallback values are provided if necessary
+                      email: item.email || "",
+                      displayName: item.displayName || "",
+                      userName: item.userName || "",
+                      password: item.password || "",  // Only if necessary
+                      friends: item.friends || [],
+                      isOnline: item.isOnline || false,
+                      img: item.img || "",
+                      lastActive: new Date(item.lastActive) || new Date(),
+                      status: item.status || "offline", // Fallback to 'offline' if status is missing
+                  }));
+                  console.log(userItems);
+                  setUsers(userItems); // Store all users instead of just one
+              } else {
+                  setUsers([]); // Set empty array if no friends found or invalid data
+              }
+          } catch (error) {
+              console.error("Error fetching online friends:", error);
+          }
+      };
+
+      fetchOnlineFriends();
+  }, [userName]);
+
+  return users; // ✅ Return an array of users
+};
 
 interface User {
   id: string;
@@ -37,6 +76,7 @@ function App() {
   const location = useLocation();
   const user = location.state as User;
   const {setTitle} = useStore();
+  const allFriends = (useAllUserStatus(user.userName));
 
   const handleButtonClick = (name: string) => {
       setTitle(name);
@@ -74,12 +114,12 @@ function App() {
         </Button>
       </Flex>
       <Flex direction={"column"} gap={"xs"} className='space2'>
-        {user.friends.map((friend, index) => (
-          <Button key={friend + index} className='flexabillty'>
-            {user.img ? (
+        {allFriends.map((friend) => (
+          <Button key={friend.id} className='flexabillty'>
+            {friend.img ? (
               <Avatar
-                key={user.id}
-                src={user.img}
+                key={friend.id}
+                src={friend.img}
                 style={{
                 height: "40px",
                 width: "40px",
@@ -101,7 +141,7 @@ function App() {
                         border: "2px solid #2f3136",
                   }} />
             )}
-            <span style={{margin: "3px 3px 3px 3px"}}>{friend} </span>
+            <span style={{margin: "3px 3px 3px 3px"}}>{friend.userName} </span>
         </Button>
       ))} 
       </Flex>

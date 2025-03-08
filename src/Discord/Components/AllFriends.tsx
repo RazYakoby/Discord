@@ -63,34 +63,34 @@ function AllFriends() {
     const location = useLocation();
     const user = location.state as User;
     const allFriends = (useAllUserStatus(user.userName));
-
+    alert(allFriends);
     return (
         <Flex direction={"column"} gap={"xs"} style={{ position: "absolute", left: "0%", top: "130px", maxHeight: "50px" }}>
-                    {Array.isArray(allFriends) && allFriends.length > 0 && (
-                        <Flex direction="column" gap="xs">
-                            {allFriends.map((friend) => (
-                                <Flex
-                                    key={friend.id} // Adding a unique key for each friend item
-                                    style={{
-                                        margin: "2px 0px 0px 10px",
-                                        color: "#ffffff",
-                                        backgroundColor: "transparent",
-                                        padding: "3px",
-                                        width: "auto", // Ensures the button width adjusts to content
-                                    }}
-                                >
-                                    <Avatar src={friend.img} />
-                                    <Flex style={{ width: "auto", marginLeft: "10px" }}>
-                                        <span style={{ fontSize: "15px", marginBottom: "15px" }}>{friend.userName}</span>
-                                    </Flex>
-                                    <Flex style={{ position: "absolute", left: "30px" }}>
-                                        <span style={{ margin: "15px 5px 0px 30px", fontSize: "15px" }}>{friend.status}</span>
-                                    </Flex>
-                                </Flex>
-                            ))}
+            {Array.isArray(allFriends) && allFriends.length > 0 && (
+                <Flex direction="column" gap="xs">
+                    {allFriends.map((friend) => (
+                        <Flex
+                            key={friend.id} 
+                            style={{
+                                margin: "2px 0px 0px 10px",
+                                color: "#ffffff",
+                                backgroundColor: "transparent",
+                                padding: "3px",
+                                width: "auto", 
+                            }}
+                        >
+                            <Avatar src={friend.img} />
+                            <Flex style={{ width: "auto", marginLeft: "10px" }}>
+                                <span style={{ fontSize: "15px", marginBottom: "15px" }}>{friend.userName}</span>
+                            </Flex>
+                            <Flex style={{ position: "absolute", left: "30px" }}>
+                                <span style={{ margin: "15px 5px 0px 30px", fontSize: "15px" }}>{friend.status}</span>
+                            </Flex>
                         </Flex>
-                    )}
+                    ))}
                 </Flex>
+            )}
+        </Flex>
     )
 }
 

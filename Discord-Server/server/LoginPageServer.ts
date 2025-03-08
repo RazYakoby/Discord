@@ -16,7 +16,7 @@ router.post("/Register", async (req: Request, res: Response) => {
         if (await EmailExist(email))
             return res.status(400).send(`User with Email ${email} already exists`);
         else {
-            await SetUser(email, displayName, userName, password, []);
+            await SetUser(email, displayName, userName, password, [], []);
             res.status(200).send("Use created successfully");
         }
     } catch (error) {
@@ -29,8 +29,15 @@ router.post("/Login", async (req: Request, res: Response) => {
     try {
         const {userName} = req.body;
 
+        if (!userName) {
+            return res.status(400).json({ message: "Username is required" });
+        }
+
         if (await UserExist(userName)){
             return res.status(200).send('Username and password are required');
+        }
+        else {
+            return res.status(404).json({ success: false, message: "User not found" });
         }
     } catch (error) {
         console.error('Error fetching user:', error);

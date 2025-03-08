@@ -111,7 +111,6 @@ function Login() {
         if (success) {
             const user = await GetUser(userName);
             if (user) {
-                alert(userName)
                 navigate(`/UserPage`, { state: user });
             }
         } else {

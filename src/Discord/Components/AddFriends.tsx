@@ -1,11 +1,79 @@
 import { Button, ScrollArea, Flex, Image, Title,Text, Container, Box, Avatar, Textarea, TextInput } from '@mantine/core';
+import axios from 'axios';
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
+const baseRoute = 'http://localhost:3200';
+const loginRoute = '/login';
+const mainRoute = '/main';
 
+const AddUserAsFriend = async (userName: string, friendName: string): Promise<boolean> => {
+    try {
+        const response = await axios.post(`${baseRoute}${mainRoute}/addFriends`, { userName, friendName });
+        if (response.status === 200) {
+            alert(response.data.message);
+            return true;
+        } else {
+            alert(`Unexpected response status: ${response.status}`);
+            return false;
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        if (axios.isAxiosError(error) && error.response) {
+            alert(`Error: ${error.response.data.message || "Unknown error occurred"}`);
+        } else {
+            alert("An unexpected error.");
+        }
+        return false;
+    }
+};
+
+const CheckUserExists = async (userName: string): Promise<boolean> => {
+    try {
+        const response = await axios.post(`${baseRoute}${loginRoute}/Login`, { userName });
+        if (response.status === 200) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        if (axios.isAxiosError(error) && error.response) {
+            alert(`Error: ${error.response.data.message || "Unknown error occurred"}`);
+        } else {
+            alert("An unexpected error occurred.");
+        }
+        return false;
+    }
+};
+
+interface User {
+    id: string;
+    email: string;
+    displayName: string;
+    userName: string;
+    password: string; 
+    friends: string[];
+    requests: string[];
+    isOnline: boolean;
+    img: string;
+    lastActive: Date;
+    status: string; 
+}
 
 function AddFriends () {
-
+    const location = useLocation();
+    const user = location.state as User;
     const [searchTerm, setSearchTerm] = useState("");
+
+    const AddUser = async () => {
+        const success = await CheckUserExists(searchTerm.trim());
+        alert(success + searchTerm.trim())
+        if (success) {
+            await AddUserAsFriend(searchTerm.trim(), user.userName);
+            alert("Send")
+        } 
+    };
 
     return (
         <Flex direction={"column"} gap={"xs"} style={{ position: "absolute", left: "0%", top: "90px", maxHeight: "50px" }}>
@@ -34,7 +102,7 @@ function AddFriends () {
             }}   
             rightSection={
                 <Button
-                    onClick={() => console.log("Friend Added")}
+                    onClick={AddUser}
                     disabled={!searchTerm.trim()} 
                     style={{
                         position: "absolute",
