@@ -1,6 +1,6 @@
 import '../../css/UserSetting.css';
 import { useLocation } from "react-router-dom";
-import {Avatar, Button, Checkbox, TextInput, Combobox, Flex, useCombobox, UnstyledButton } from '@mantine/core';
+import {Avatar, Button, Combobox, Flex, useCombobox, UnstyledButton } from '@mantine/core';
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { TbHeadphonesFilled, TbHeadphonesOff  } from "react-icons/tb";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -20,7 +20,6 @@ interface User {
 }
 
 const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
 const mainRoute = '/main';
 
 const useUserStatus = (userName: string, status: string) => {

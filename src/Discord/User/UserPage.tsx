@@ -1,6 +1,5 @@
 import Channles from "./Channels";
 import ChatNStaff from "./Chat&staff";
-import Display from "./Display";
 import Search from "./Search";
 import Titles from "./Titles";
 import UserSetting from "./UserSetting";

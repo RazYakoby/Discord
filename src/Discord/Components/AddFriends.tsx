@@ -1,4 +1,4 @@
-import { Button, ScrollArea, Flex, Image, Title,Text, Container, Box, Avatar, Textarea, TextInput } from '@mantine/core';
+import { Button, Flex, Title, TextInput } from '@mantine/core';
 import axios from 'axios';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -11,7 +11,6 @@ const AddUserAsFriend = async (userName: string, friendName: string): Promise<bo
     try {
         const response = await axios.post(`${baseRoute}${mainRoute}/addFriends`, { userName, friendName });
         if (response.status === 200) {
-            alert(response.data.message);
             return true;
         } else {
             alert(`Unexpected response status: ${response.status}`);
@@ -68,7 +67,6 @@ function AddFriends () {
 
     const AddUser = async () => {
         const success = await CheckUserExists(searchTerm.trim());
-        alert(success + searchTerm.trim())
         if (success) {
             await AddUserAsFriend(searchTerm.trim(), user.userName);
             alert("Send")

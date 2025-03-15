@@ -1,10 +1,9 @@
-import { Button, ScrollArea, Flex, Image, Title,Text, Container, Box, Avatar, Textarea, TextInput } from '@mantine/core';
+import {Flex, Avatar } from '@mantine/core';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
 const mainRoute = '/main';
 
 const useUserStatus = (userName: string) => {

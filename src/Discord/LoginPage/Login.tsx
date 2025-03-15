@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Button, Container, TextInput, PasswordInput, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import '@mantine/core/styles.css';
-import { useEffect } from 'react';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';

@@ -1,6 +1,6 @@
 import '../../css/Chat&staff.css';
-import { useLocation, useNavigate } from "react-router-dom";
-import {Avatar, Button, Flex, Title } from '@mantine/core';
+import { useLocation } from "react-router-dom";
+import {Avatar, Button, Flex } from '@mantine/core';
 import { FaDiscord, FaUserFriends } from "react-icons/fa";
 import { IoLogoIonitron } from "react-icons/io5";
 import { GiShop } from "react-icons/gi";
@@ -13,7 +13,7 @@ const baseRoute = 'http://localhost:3200';
 const mainRoute = '/main';
 
 const useAllUserStatus = (userName: string) => {
-  const [users, setUsers] = useState<User[]>([]); // Ensure users is an array
+  const [users, setUsers] = useState<User[]>([]); 
   useEffect(() => {
       const fetchOnlineFriends = async () => {
           try {
@@ -21,23 +21,22 @@ const useAllUserStatus = (userName: string) => {
               console.log(response.data);
 
               if (Array.isArray(response.data)) {
-                  // Mapping the response to User objects
                   const userItems: User[] = response.data.map((item: any) => ({
-                      id: item.id || "",  // Ensure fallback values are provided if necessary
+                      id: item.id || "", 
                       email: item.email || "",
                       displayName: item.displayName || "",
                       userName: item.userName || "",
-                      password: item.password || "",  // Only if necessary
+                      password: item.password || "", 
                       friends: item.friends || [],
                       isOnline: item.isOnline || false,
                       img: item.img || "",
                       lastActive: new Date(item.lastActive) || new Date(),
-                      status: item.status || "offline", // Fallback to 'offline' if status is missing
+                      status: item.status || "offline", 
                   }));
                   console.log(userItems);
-                  setUsers(userItems); // Store all users instead of just one
+                  setUsers(userItems); 
               } else {
-                  setUsers([]); // Set empty array if no friends found or invalid data
+                  setUsers([]); 
               }
           } catch (error) {
               console.error("Error fetching online friends:", error);
@@ -47,7 +46,7 @@ const useAllUserStatus = (userName: string) => {
       fetchOnlineFriends();
   }, [userName]);
 
-  return users; // ✅ Return an array of users
+  return users; 
 };
 
 interface User {
@@ -77,7 +76,6 @@ function App() {
   const user = location.state as User;
   const {setTitle} = useStore();
   const allFriends = (useAllUserStatus(user.userName));
-
   const handleButtonClick = (name: string) => {
       setTitle(name);
   }

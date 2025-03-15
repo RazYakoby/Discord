@@ -1,45 +1,18 @@
 import '../../css/Titles.css';
-import { Button, ScrollArea, Flex, Image, Title,Text, Container, Box, Avatar } from '@mantine/core';
+import { Button, ScrollArea, Flex, Box } from '@mantine/core';
 import { useStore } from './Chat&staff';
 import { FaUserFriends } from "react-icons/fa";
 import { IoLogoIonitron } from "react-icons/io5";
 import { GiShop } from "react-icons/gi";
-import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
-import { Await, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import AddFriends from '../Components/AddFriends';
-import { stat } from 'fs';
 import OnlineFriends from '../Components/OnlineFriends';
 import AllFriends from '../Components/AllFriends';
 import Inbox from '../Components/Inbox';
 
-const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
-const mainRoute = '/main';
-
-interface User {
-    id: string;
-    email: string;
-    displayName: string;
-    userName: string;
-    password: string; // Only if necessary
-    friends: string[];
-    isOnline: boolean;
-    img: string;
-    lastActive: Date;
-    status: string; // "online" | "idle" or any other status you might have
-}
-
-interface OnlineFriendsProps {
-    friends: User[]; // Expected prop
-}
-
 function Titles() {
-    const { title } = useStore();
-    const location = useLocation();
-    const user = location.state as User;
+    const { title } = useStore();    
 
-    // State for tracking the online status visibility
     const [status, setStatus] = useState(false);
     const [allStatusFriends, setAllStatusFriends] = useState(false);
     const [pending, setPending] = useState(false);
@@ -90,8 +63,6 @@ function Titles() {
     const OpenInbox = () => {
         setInbox(!inbox);
     }
-
-    const inboxRef = useRef<HTMLDivElement>(null);
 
     const toggleInbox = () => {
       setInbox((prev) => !prev);

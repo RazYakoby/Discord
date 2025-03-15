@@ -1,10 +1,9 @@
-import { Button, ScrollArea, Flex, Image, Title,Text, Container, Box, Avatar, Textarea, TextInput } from '@mantine/core';
+import { Flex, Avatar } from '@mantine/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
 const mainRoute = '/main';
 
 const useAllUserStatus = (userName: string) => {
@@ -63,7 +62,7 @@ function AllFriends() {
     const location = useLocation();
     const user = location.state as User;
     const allFriends = (useAllUserStatus(user.userName));
-    alert(allFriends);
+
     return (
         <Flex direction={"column"} gap={"xs"} style={{ position: "absolute", left: "0%", top: "130px", maxHeight: "50px" }}>
             {Array.isArray(allFriends) && allFriends.length > 0 && (
