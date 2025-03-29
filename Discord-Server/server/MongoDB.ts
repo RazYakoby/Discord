@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const clusterUrl = "localhost:27017"; 
 const dbUrl = "mongodb://localhost:27017/";//`mongodb+srv://${userName}:${password}@${clusterUrl}/test?retryWrites=true&w=majority`;
 const client = new MongoClient(dbUrl, {});
+import { WithId, Document } from "mongodb";
 
 export async function SetUser(email: string, displayName: string, userName: string, password: string, friends: string[], requests: string[]) {
     await client.connect();
@@ -203,8 +204,6 @@ export async function InsertFriends(userName: string, friendName: string) {
     return update;
 }
 
-import { WithId, Document } from "mongodb";
-
 export async function RejectFriends(userName: string, friendName: string) {
     await client.connect();
     const userCollection = client.db("Discord").collection<WithId<Document>>("Users");
@@ -218,6 +217,41 @@ export async function RejectFriends(userName: string, friendName: string) {
     return update;
 }
 
+export async function AddChannel(channelName: string, image: string, serverType: string, manager: string) {
+    await client.connect();
+    const collection = await client.db("Discord").collection("Channels");
+    await collection.insertOne({ 
+        "channelName": channelName, 
+        "image": image,
+        "serverType": serverType,
+        "manager": manager,
+        "members": [],
+    });
+    await client.close();
+}
+
+export async function addMember(channelName: string, member: string) {
+    await client.connect();
+    const collection = client.db("Discord").collection("Channels");
+    const update = await collection.updateOne(
+        { "channelName": channelName},
+        { "$addToSet": { "member": member } } 
+    );    
+    await client.close();
+}
+
+export async function GetChannel(userName: string) {
+    await client.connect();
+    const collection = await client.db("Discord").collection("Channels");
+    const channels = await collection.find({
+            $or: [
+                { manager: userName, members: { $not: { $in: [userName] } } }, // User is manager but NOT a member
+                { members: { $in: [userName] }, manager: { $ne: userName } }   // User is a member but NOT the manager
+            ]
+    }).toArray();
+    await client.close();
+    return channels;
+}
 
 let isConnected = false; // Track connection state
 

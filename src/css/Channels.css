@@ -7,17 +7,18 @@
     height: 100%;
     width: 80px;
     border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
 }
 
 .myChannel {
     background-color: rgb(55, 54, 54);
-    position: absolute;
     border-radius: 50%;
-    width: 70%;
-    height: 8%;
-    left: 12%;
-    top: 10px;
-    margin: 0%;
+    width: 60px;
+    height: 60px;
     cursor: pointer;
 }
 
@@ -27,15 +28,81 @@
     border: none;
 }
 
+.myChannel:hover + .hover-text-ForAvatar {
+    display: block; 
+}
+
+
+.hover-text-ForAvatar {
+    display: none; 
+    position: absolute;
+    top: 40%;
+    left: 110%;
+    transform: translateY(-50%);  
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap; 
+    z-index: 3;
+}
+
+.otherChannels {
+    background-color: rgb(55, 54, 54);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+
+.otherChannels:hover {
+    border-radius: 10%;
+    transition: 0.5s;
+    border: none;
+}
+
+.channel-container {
+    position: relative;
+}
+
+.hover-text {
+    display: none; 
+    position: absolute;
+    top: 50%;
+    left: 110%;
+    transform: translateY(-50%);  
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap; 
+    z-index: 3;
+}
+
+
+.otherChannels:hover + .hover-text {
+    display: block; 
+}
+
+.hover-text-ForButton {
+    display: none; 
+    position: absolute;
+    top: 39%;
+    left: 97%;
+    transform: translateY(-50%);  
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap; 
+    z-index: 3;
+}
+
 .addChannelButton {
     background-color: rgb(55, 54, 54);
-    position: absolute;
     border-radius: 50%;
-    width: 70%;
-    height: 8%;
-    left: 12%;
-    top: 82px;
-    margin: 0%;
+    width: 60px;
+    height: 60px;
 }
 
 .addChannelButton:hover {
@@ -44,43 +111,27 @@
     border: none;
 }
 
+.addChannelButton:hover + .hover-text-ForButton {
+    display: block;
+}
+
 .addChannelButton h1 {
     color: rgb(26, 147, 26);
+    width: 60px;
+    height: 60px;
     position: absolute;
-    width: 70%;
-    height: 8%;
-    left: 15%;
-    bottom: 55px;
-    margin: 0%;
+    left: 0px;
 }
 
 p {
-    background-color:  rgb(55, 54, 54);
-    position: absolute;
-    border-radius: 25px;
-    width: 40%;
-    height: 0.3%;
-    left: 26%;
-    top: 72px;
-    margin: 0%;
-}
-
-.hover-text {
-    display: none; 
-    position: absolute;
-    top: 2%; 
-    left: 210%;
-    transform: translateX(-50%);
     background-color: rgb(55, 54, 54);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    white-space: nowrap; 
-    z-index: 3; 
-}
-
-.addChannelButton:hover .hover-text {
-    display: block; 
+    border-radius: 25px;
+    display: flex;           
+    align-items: center;     
+    justify-content: center;   
+    width: 90%;
+    height: 3%;
+    margin: 10px auto;         
 }
 
 .model-overlay {

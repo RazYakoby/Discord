@@ -2,64 +2,102 @@ import { useEffect, useState } from 'react';
 import '../../css/Channels.css';
 import CreateServer from './CreateServer';
 import { Button, Flex, Avatar, Card } from '@mantine/core';
-
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const baseRoute = 'http://localhost:3200';
-const loginRoute = '/login';
+const mainRoute = '/main';
 
-/*const GetChannels = async (): Promise<Channels[]> => {
+interface Channels {
+    channelName: string;
+    image: string;
+    serverType: string;
+    manager: string;
+    members: [];
+    onClick: () => void;
+}
+
+interface User {
+    id: string;
+    email: string;
+    displayName: string;
+    userName: string;
+    password: string; 
+    friends: string[];
+    requests: string[];
+    isOnline: boolean;
+    img: string;
+    lastActive: Date;
+    status: string; 
+}
+
+const GetChannels = async (userName: string) => {
     try {
-        const response = await axios.post(`${baseRoute}${loginRoute}/GetChannels`);
+        const response = await axios.post(`${baseRoute}${mainRoute}/GetChannels`, { userName });
         if (response.status === 200) {
             console.log('Response data:', JSON.stringify(response.data, null, 2));
             return Array.isArray(response.data) ? response.data : [];
         } else {
-            console.error('Failed to fetch stories:', response.statusText);
+            console.error('Failed to fetch channels:', response.statusText);
             return [];
         }
     } catch (error) {
-        console.error('Error fetching user stories:', error);
+        console.error('Error fetching channels:', error);
         return [];
     }
-} */
-
-interface Channels {
-    userName: string[];
-    onClick: () => void;
 }
 
-function Channles () {
-
+function Channles() {
+    const location = useLocation();
+    const user = location.state as User;
     const [isCreateServerOpen, setIsCreateServerOpen] = useState(false);
     const [channels, setChannels] = useState<Channels[]>([]);
+
     const isOpen = () => {
         setIsCreateServerOpen(!isCreateServerOpen);
     }
 
-    //useEffect(() => {
-        //const fetch = async () => {
-            //const fetchChannels = await GetChannels();
-            //setChannels(fetchChannels);
-        //}
-        //fetch();
-   // }, []);
+    // Fetch channels on component mount
+    useEffect(() => {
+        const fetchChannels = async () => {
+            const fetchedChannels = await GetChannels(user.userName);
+            setChannels(fetchedChannels);
+        };
+
+        fetchChannels(); // Call the fetch function
+    }, [user.userName]); // Re-fetch if the userName changes
 
     return (
-        <Flex className='pannel'>
-            <Avatar
-                className='myChannel'
-                src={null} 
-                alt="no image here"
-                color='white'
-            />
-            <p/>
-            <Flex>
-                <Button className='addChannelButton' onClick={isOpen}><h1>+</h1></Button>
-                {!isCreateServerOpen && (
-                    <button className='addChannelButton' onClick={isOpen}><h1>+</h1> <div className="hover-text">Add a Server</div></button>
-                )}
-                {isCreateServerOpen && (
+        <Flex className='pannel' direction="column" gap="xs">
+            <Flex direction="column" gap="xs">
+                    <div className="channel-container">
+                        <Avatar
+                            className='myChannel'
+                            src={user.img}
+                            color='white'
+                        />
+                        <div className="hover-text-ForAvatar">{user.userName}</div>
+                        <p/>
+                    </div>
+                {channels.map((channel, index) => (
+                    <div key={index} className="channel-container">
+                        <Avatar
+                            className='otherChannels'
+                            src={channel.image}
+                            color='white'
+                        />
+                        <div className="hover-text">{channel.channelName}</div>
+                    </div>
+                        
+                ))}
+                <div className="add-channel-container">
+                    <Button className="addChannelButton" onClick={isOpen}>
+                        <h1>+</h1>
+                    </Button>
+                    <div className="hover-text-ForButton">Create a new channel</div>
+                </div>
+
+                   {isCreateServerOpen && (
                     <Card className='model-overlay' onClick={isOpen}>
                         <Flex direction="column" gap="xs" className='model-content' onClick={(e) => e.stopPropagation()}>
                             <Flex style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -67,13 +105,13 @@ function Channles () {
                                     X
                                 </Button>
                             </Flex>
-                            <CreateServer/>
+                            <CreateServer />
                         </Flex>
                     </Card>
                 )}
             </Flex>
         </Flex>
-    )
+    );
 }
 
 export default Channles;

@@ -1,5 +1,5 @@
 import express, {Request, Response} from 'express';
-import { AddFriends, GetAllFriends, GetAllRequests, GetFriends, GetOnline, GetUser, InsertFriends, RejectFriends, SetOffline, SetStatus } from './MongoDB';
+import { AddChannel, AddFriends, addMember, GetAllFriends, GetAllRequests, GetChannel, GetFriends, GetOnline, GetUser, InsertFriends, RejectFriends, SetOffline, SetStatus } from './MongoDB';
 import { error } from 'console';
 
 const router = express.Router();
@@ -115,6 +115,39 @@ router.post("/rejectFriends", async (req: Request, res: Response) => {
         return res.status(200).json(user);
     } catch (error) {
         console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.post("/addChannel", async (req: Request, res: Response) => {
+    try {
+        const {channelName, image, serverType, manager} = req.body;
+        const channel = await AddChannel(channelName, image, serverType, manager);
+        return res.status(200).json(channel);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.post("/addMember", async (req: Request, res: Response) => {
+    try {
+        const {channelName, member} = req.body;
+        const channel = await addMember(channelName, member);
+        return res.status(200).json(channel);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.post("/GetChannels", async (req: Request, res: Response) => {
+    try {
+        const { userName } = req.body;
+        const channels = await GetChannel(userName); 
+        return res.status(200).json(channels); 
+    } catch (error) {
+        console.error("Error retrieving friends:", error);
         res.status(500).send("Internal Server Error");
     }
 });

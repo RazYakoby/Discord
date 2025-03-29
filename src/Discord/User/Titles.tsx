@@ -121,12 +121,12 @@ function Titles() {
 
                         {allStatusFriends && (
                             <AllFriends/>
-                        )}
-                        
+                        )} 
 
                         {addFriends && (
                             <AddFriends/>
                         )}
+                        
                         {inbox && (
                             <Inbox/>
                         )}
