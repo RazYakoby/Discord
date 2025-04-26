@@ -49,6 +49,17 @@ const useAllUserStatus = (userName: string) => {
   return users; 
 };
 
+
+interface Channels {
+  channelName: string;
+  image: string;
+  serverType: string;
+  manager: string;
+  members: [];
+  onClick: () => void;
+}
+
+
 interface User {
   id: string;
   email: string;
@@ -73,7 +84,10 @@ export const useStore = create<TitleProps>((set) => ({
 function App() {
 
   const location = useLocation();
-  const user = location.state as User;
+  const { user, channels: initialChannels } = location.state as {
+    user: User;
+    channels: Channels;
+};
   const {setTitle} = useStore();
   const allFriends = (useAllUserStatus(user.userName));
   const handleButtonClick = (name: string) => {

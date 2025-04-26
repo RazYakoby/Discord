@@ -8,6 +8,16 @@ import { FaDiscord } from "react-icons/fa";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+
+interface Channels {
+    channelName: string;
+    image: string;
+    serverType: string;
+    manager: string;
+    members: [];
+    onClick: () => void;
+}
+
 interface User {
     id: string;
     email: string;
@@ -48,7 +58,10 @@ function UserSetting () {
 
     const [value, setValue] = useState("online");
     const location = useLocation();
-    const user = location.state as User;
+    const { user, channels: initialChannels } = location.state as {
+        user: User;
+        channels: Channels[];
+    };
 
     useUserStatus(user.userName, value);
     const combobox = useCombobox ({

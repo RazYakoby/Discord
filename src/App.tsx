@@ -3,6 +3,7 @@ import Login from './Discord/LoginPage/Login';
 import Register from './Discord/LoginPage/Register';
 import UserPage from './Discord/User/UserPage';
 import ForgotPassword from './Discord/LoginPage/ForgotPassword';
+import ChannelPage from './Discord/Channel/ChannelPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path='/Register' element={<Register />} />
         <Route path='/ForgotPassword' element={<ForgotPassword />} />
         <Route path="/UserPage" element={<UserPage />} />        
+        <Route path="/ChannelPage" element={<ChannelPage />} />
       </Routes>
     </Router>
   );

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button, Container, TextInput, PasswordInput, Flex } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import '@mantine/core/styles.css';
+import { useState } from 'react';
 
 const baseRoute = 'http://localhost:3200';
 const loginRoute = '/login';
@@ -29,7 +30,14 @@ const loginIn = async (userName: string, password: string): Promise<boolean> => 
         return false;
     }
 };
-
+interface Channels {
+    channelName: string;
+    image: string;
+    serverType: string;
+    manager: string;
+    members: [];
+    onClick: () => void;
+}
 interface User {
     id: string;
     email: string;
@@ -84,6 +92,7 @@ const GetUser = async (userName: string): Promise<User> => {
 };
 
 function Login() {
+    const [channels, setChannels] = useState<Channels[]>([]);
     const l = document.getElementsByName("login1");
     const form = useForm({
         initialValues: {
@@ -110,7 +119,9 @@ function Login() {
         if (success) {
             const user = await GetUser(userName);
             if (user) {
-                navigate(`/UserPage`, { state: user });
+                navigate(`/UserPage`,{
+                    state: { user, channels },
+                });
             }
         } else {
             alert("Login failed. Please check your username and password.");

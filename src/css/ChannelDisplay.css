@@ -1,0 +1,16 @@
+.channelDisplay {
+    background-color: #3a3a3a;
+    position: absolute;
+    left: 314px;
+    top: 7%;
+    margin: 0%;
+    height: 93%;
+    width: 79.55%;
+    border: 2px solid black;
+}
+
+@media (max-width: 800px) {
+    .channelDisplay {
+        width: 453px;
+    } 
+}

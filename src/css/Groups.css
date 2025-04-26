@@ -1,0 +1,87 @@
+.groups {
+    background-color: #3a3a3a;
+    position: absolute;
+    left: 80px;
+    top: 7%;
+    margin: 0;
+    height: 86%;
+    width: 235px;
+    border: 2px solid black;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scroll-snap-type: mandatory;
+    scroll-snap-align: right;
+    scrollbar-color: #555 transparent;
+}
+
+.textChannel {
+    position: relative;
+    left: 10px;
+}
+
+.bg {
+    position: relative;
+    border: none;
+    background-color: transparent;
+    right: -67px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bg2 {
+    position: relative;
+    border: none;
+    background-color: transparent;
+    right: -62px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.hover-text1 {
+    display: none;
+    position: fixed;
+    top: 7%;
+    left: 290px;
+    transform: translateX(-50%);
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: visible;
+    z-index: 3;
+}
+
+.hover-text2 {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 290px;
+    transform: translateX(-50%);
+    background-color: rgb(55, 54, 54);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: visible;
+    z-index: 3;
+}
+
+.bg:hover {
+    background-color: transparent;
+}
+
+.bg2:hover {
+    background-color: transparent;
+}
+
+.bg:hover .hover-text1 {
+    display: block;
+}
+
+.bg2:hover .hover-text2 {
+    display: block;
+}

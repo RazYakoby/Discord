@@ -3,7 +3,7 @@ import '../../css/Channels.css';
 import CreateServer from './CreateServer';
 import { Button, Flex, Avatar, Card } from '@mantine/core';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const baseRoute = 'http://localhost:3200';
 const mainRoute = '/main';
@@ -49,24 +49,41 @@ const GetChannels = async (userName: string) => {
 
 function Channles() {
     const location = useLocation();
-    const user = location.state as User;
+    const { user, channels: initialChannels } = location.state as {
+        user: User;
+        channels: Channels;
+    };
+    
+    const navigate = useNavigate();
     const [isCreateServerOpen, setIsCreateServerOpen] = useState(false);
     const [channels, setChannels] = useState<Channels[]>([]);
-
+    
     const isOpen = () => {
         setIsCreateServerOpen(!isCreateServerOpen);
-    }
+    };
 
+    const handleChannel = (index: number ,channelName: string) => {
+        if (channelName === user.userName) {
+            navigate("/UserPage", { state: { user } });
+        } else {
+            navigate("/ChannelPage", {
+                state: { user, channels: channels[index] },
+            });
+        }
+    };
+    
+    console.log(location.state);
+    
     // Fetch channels on component mount
     useEffect(() => {
         const fetchChannels = async () => {
             const fetchedChannels = await GetChannels(user.userName);
             setChannels(fetchedChannels);
         };
-
-        fetchChannels(); // Call the fetch function
-    }, [user.userName]); // Re-fetch if the userName changes
-
+    
+        fetchChannels();
+    }, [user.userName]);
+    
     return (
         <Flex className='pannel' direction="column" gap="xs">
             <Flex direction="column" gap="xs">
@@ -75,6 +92,7 @@ function Channles() {
                             className='myChannel'
                             src={user.img}
                             color='white'
+                            onClick={() => handleChannel(0, user.userName)}
                         />
                         <div className="hover-text-ForAvatar">{user.userName}</div>
                         <p/>
@@ -85,6 +103,7 @@ function Channles() {
                             className='otherChannels'
                             src={channel.image}
                             color='white'
+                            onClick={() => handleChannel(index, channel.channelName)}
                         />
                         <div className="hover-text">{channel.channelName}</div>
                     </div>
