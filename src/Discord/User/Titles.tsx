@@ -1,5 +1,5 @@
 import '../../css/Titles.css';
-import { Button, ScrollArea, Flex, Box } from '@mantine/core';
+import { Button, ScrollArea, Flex, Box, TextInput } from '@mantine/core';
 import { useStore } from './Chat&staff';
 import { FaUserFriends } from "react-icons/fa";
 import { IoLogoIonitron } from "react-icons/io5";
@@ -9,8 +9,45 @@ import AddFriends from '../Components/AddFriends';
 import OnlineFriends from '../Components/OnlineFriends';
 import AllFriends from '../Components/AllFriends';
 import Inbox from '../Components/Inbox';
+import { useLocation } from 'react-router-dom';
+import { BiSolidPhoneCall } from "react-icons/bi";
+import { BsFillCameraVideoFill } from "react-icons/bs";
+import { TiPin } from "react-icons/ti";
+import { IoHelpCircle } from "react-icons/io5";
+import { BiSolidInbox } from "react-icons/bi";
+
+interface Channels {
+    channelName: string;
+    image: string;
+    serverType: string;
+    manager: string;
+    members: [];
+    onClick: () => void;
+}
+
+interface User {
+    id: string;
+    email: string;
+    displayName: string;
+    userName: string;
+    password: string; 
+    friends: string[];
+    requests: string[];
+    isOnline: boolean;
+    img: string;
+    lastActive: Date;
+    status: string; 
+}
+
 
 function Titles() {
+
+    const location = useLocation();
+    const { user, channels: initialChannels } = location.state as {
+        user: User;
+        channels: Channels;
+    };
+
     const { title } = useStore();    
 
     const [status, setStatus] = useState(false);
@@ -19,6 +56,17 @@ function Titles() {
     const [block, setBlock] = useState(false);
     const [addFriends, setAddFriends] = useState(false);
     const [inbox, setInbox] = useState(false);
+    const [chat, setChat] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const FriendsNameExists = () => {
+        user.friends.forEach(element => {
+            if (element === title) {
+                return true;
+            }
+        });
+        return false;
+    }
 
     const GetOnlineFriends = () => {
         setStatus(true);
@@ -26,6 +74,7 @@ function Titles() {
         setPending(false);
         setBlock(false);
         setAddFriends(false);
+        setChat(false);
     };
 
     const GetAllFriends = () => {
@@ -34,6 +83,7 @@ function Titles() {
         setPending(false);
         setBlock(false);
         setAddFriends(false);
+        setChat(false);
     }
 
     const GetPending = () => {
@@ -42,6 +92,7 @@ function Titles() {
         setPending(true);
         setBlock(false);
         setAddFriends(false);
+        setChat(false);
     }
 
     const GetBlock = () => {
@@ -50,6 +101,7 @@ function Titles() {
         setPending(false);
         setBlock(true);
         setAddFriends(false);
+        setChat(false);
     }
 
     const GetAddFrineds = () => {
@@ -58,6 +110,16 @@ function Titles() {
         setPending(false);
         setBlock(false);
         setAddFriends(true);
+        setChat(false);
+    }
+
+    const GetChat = () => {
+        setStatus(false);
+        setAllStatusFriends(false);
+        setPending(false);
+        setBlock(false);
+        setAddFriends(false);
+        setChat(true);
     }
 
     const OpenInbox = () => {
@@ -133,8 +195,7 @@ function Titles() {
       
                     </>
                 )}
-                
-                
+            
                 {title === "Nitro" && (
                     <>
                         <IoLogoIonitron
@@ -149,6 +210,7 @@ function Titles() {
                         <span style={{ margin: "9px 3px 1px 5px", color: "white" }}>{title}</span>
                     </>
                 )}
+
                 {title === "Shop" && (
                     <>
                         <GiShop
@@ -163,6 +225,55 @@ function Titles() {
                         <span style={{ margin: "9px 3px 1px 5px", color: "white" }}>{title}</span>
                     </>
                 )}
+
+                {title === "friendsName" && (
+                    <>
+                        <Flex className="titleButtons" style={{ width: "100%" }}>
+                            <ScrollArea w={"100%"} type="never" style={{ overflowX: "auto" }}>                            <Box
+                                w={"100%"}
+                                style={{
+                                display: "flex",
+                                whiteSpace: "nowrap",
+                                justifyContent: "flex-end", // move all children to the right
+                                gap: "8px" // optional spacing between buttons
+                                }}
+                            >
+                                <Button variant={"subtle"} color={"white"} style={{ fontSize: "20px" }}>
+                                <BiSolidPhoneCall />
+                                </Button>
+                                <Button variant={"subtle"} color={"white"} style={{ fontSize: "20px" }}>
+                                <BsFillCameraVideoFill />
+                                </Button>
+                                <Button variant={"subtle"} color={"white"} style={{ fontSize: "20px" }}>
+                                <TiPin />
+                                </Button>
+                                <TextInput
+                                type="text"
+                                placeholder="search"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                styles={{
+                                    input: {
+                                    backgroundColor: '#202225',
+                                    color: "white",
+                                    width: "160px",
+                                    fontSize: "15px"
+                                    }
+                                }}
+                                />
+                                <Button style={{ backgroundColor: 'transparent', fontSize: "20px" }} onClick={toggleInbox}>
+                                <BiSolidInbox />
+                                </Button>
+                                <Button style={{ backgroundColor: 'transparent', fontSize: "20px" }}>
+                                <IoHelpCircle />
+                                </Button>
+                            </Box>
+                            </ScrollArea>
+                        </Flex>
+                    </>
+
+                )}
+
             </Flex>
     );
 }

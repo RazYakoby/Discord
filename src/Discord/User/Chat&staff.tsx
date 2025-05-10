@@ -8,6 +8,7 @@ import {create} from "zustand";
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import Display from './Display';
 
 const baseRoute = 'http://localhost:3200';
 const mainRoute = '/main';
@@ -87,12 +88,30 @@ function App() {
   const { user, channels: initialChannels } = location.state as {
     user: User;
     channels: Channels;
-};
+  };
+  const [isFriendsTitleSelected, setisFriendsTitleSelected] = useState(false);
+  const [isNitroTitleSelected, setisNitroTitleSelected] = useState(false);
+  const [isShopTitleSelected, setisShopTitleSelected] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState<User | null>(null);
   const {setTitle} = useStore();
   const allFriends = (useAllUserStatus(user.userName));
+
   const handleButtonClick = (name: string) => {
-      setTitle(name);
+    setisFriendsTitleSelected(true);
+    setisNitroTitleSelected(false);
+    setisShopTitleSelected(false);
+    setSelectedFriend(null);
+    setTitle(name);
   }
+
+  const SelectedFriendsButton = (name: User) => {
+    setisFriendsTitleSelected(false);
+    setisNitroTitleSelected(false);
+    setisShopTitleSelected(false);
+    setSelectedFriend(name);
+    setTitle("friendsName");
+  }
+
 
   return (
     <Flex direction={"column"} className='button1'>
@@ -126,37 +145,41 @@ function App() {
         </Button>
       </Flex>
       <Flex direction={"column"} gap={"xs"} className='space2'>
-        {allFriends.map((friend) => (
-          <Button key={friend.id} className='flexabillty'>
-            {friend.img ? (
-              <Avatar
-                key={friend.id}
-                src={friend.img}
-                style={{
-                height: "40px",
-                width: "40px",
-                borderRadius: "50%",
-                margin: "0px 10px 0px 0px",
-                border: "2px solid #2f3136",
-                backgroundColor: "#36393f", 
-                }}
-                alt="Avatar"
-              />
-            ) : (
-                <FaDiscord size={40}     
-                    style={{
-                        margin: "0px 10px 0px 0px",
-                        color: "#ffffff",
-                        backgroundColor: "#5865F2",
-                        borderRadius: "50%",
-                        padding: "5px",
-                        border: "2px solid #2f3136",
-                  }} />
-            )}
-            <span style={{margin: "3px 3px 3px 3px"}}>{friend.userName} </span>
-        </Button>
-      ))} 
-      </Flex>
+  {allFriends.map((friend) => (
+    <Button key={friend.id} className='flexabillty' onClick={() => SelectedFriendsButton(friend)}>
+      {friend.img ? (
+        <Avatar
+          src={friend.img}
+          style={{
+            height: "40px",
+            width: "40px",
+            borderRadius: "50%",
+            margin: "0px 10px 0px 0px",
+            border: "2px solid #2f3136",
+            backgroundColor: "#36393f",
+          }}
+          alt="Avatar"
+        />
+      ) : (
+        <FaDiscord
+          size={40}
+          style={{
+            margin: "0px 10px 0px 0px",
+            color: "#ffffff",
+            backgroundColor: "#5865F2",
+            borderRadius: "50%",
+            padding: "5px",
+            border: "2px solid #2f3136",
+          }}
+        />
+      )}
+      <span style={{ margin: "3px" }}>{friend.userName}</span>
+    </Button>
+  ))}
+</Flex>
+
+{/* Chat Display appears below */}
+{selectedFriend && <Display friend={selectedFriend} currentUser={user.userName} />}
     </Flex>
   );
 }
