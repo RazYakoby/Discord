@@ -6,8 +6,8 @@ import Login from './Discord/LoginPage/Login.tsx'
 import { MantineProvider } from '@mantine/core';
 
 createRoot(document.getElementById('root')!).render(
-  <MantineProvider>
-    <App />
-  </MantineProvider>,
-)
+    <MantineProvider>
+      <App />
+    </MantineProvider>
+);
 
